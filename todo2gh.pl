@@ -37,25 +37,31 @@ use List::AllUtils qw/ indexes before apply first /;
 use Git::Repository;
 use IO::Prompt::Tiny qw/prompt/;
 use Net::GitHub;
+use Getopt::Long; 
  
 my $git = Git::Repository->new( work_tree => '.' );
  
 # my remote is always named 'github', you might have to
 # adapt to your habits
-my( $project ) = first { /^github/ } $git->run( 'remote', '-v' );
+my( $project ) = first { /^origin/ } $git->run( 'remote', '-v' );
 $project =~ s/^.*?://;
 $project =~ s/\.git.*$//;
  
+my $verbose = '';   # option variable with default value (false)
+my $path    =  '.';       # option variable with default value (false)
+my $pass    =  '';       # option variable with default value (false)
+    GetOptions ('verbose' => \$verbose, 'pass=s' => \$pass, 'path' => \$path);
+
 my $github = Net::GitHub->new(
-    login => 'you',
-    pass => 'yourpassword',
+    login => 'knbknb',
+    pass => $pass,
 );
  
 $github->set_default_user_repo( split '/', $project );
  
 Path::Iterator::Rule->new
     ->file
-    ->name( qr/\.p[lm]$/ )
+    ->name( qr/\.p[lm]$|\.R$/ )
         # I'm too lazy for the next() dance...
     ->and( sub{
         my $path = path($_);
@@ -84,7 +90,7 @@ sub process_todo {
     say "";
     say @body;
  
-    prompt( "create Issue? (y/N)", 'n' ) =~ /y/ or return;
+    prompt( "create Issue? (y/N)", 'n' ) =~ /y/i or return;
  
     my $isu = $github->issue->create_issue( {
         "title" => $subject,
