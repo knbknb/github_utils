@@ -1,5 +1,30 @@
 #!/usr/bin/perl
- 
+
+# source: 
+# weblog of perl hacker  Yanick Champoux, from Canada
+# http://babyl.ca/techblog/entry/todo2gh 
+# https://github.com/yanick/
+
+=pod
+With this little beauty, you can do
+	
+$ todo2gh.pl lib
+
+in the root of your project and it'll sniff all the modules and scripts and, for all TODO found of the format
+	
+# TODO frobusnicate the loop
+# some details that will end up in the issue's body
+
+it'll prompt you if you want to create an issue and automagically convert the TODO to
+	
+# TODO [GH3] frobusnicate the loop
+# some details that will end up in the issue's body
+
+Meanwhile, a new issue will now live on GitHub, with the proper title and label, and a nice link in the body leading to that exact place in the code.
+
+Enjoy!
+=cut
+
 #use 5.16.0;
 use 5.14.2;
  
